@@ -6,6 +6,10 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using CommonLibrary.Utilities;
 using System.Runtime.InteropServices;
+using System.Xml.Serialization;
+using System.IO;
+using System.Xml.Linq;
+using System.Xml;
 
 namespace CommonLibrary.Native
 {
@@ -70,6 +74,30 @@ namespace CommonLibrary.Native
         public static string SFormat(this string s, params object[] args)
         {
             return string.Format(s, args);
+        }
+
+        public static T Deserialize<T>(this string value) where T : class
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(T));
+
+            T newObject;
+
+            using (StringReader stringReader = new StringReader(value))
+            {
+                using (XmlReader xmlReader = new XmlTextReader(stringReader))
+                {
+                    try
+                    {
+                        newObject = serializer.Deserialize(xmlReader) as T;
+                    }
+                    catch
+                    {
+                        newObject = null;
+                    }
+                }
+            }
+
+            return newObject;
         }
         #endregion
 
@@ -152,6 +180,27 @@ namespace CommonLibrary.Native
                 return d.Value;
             }
             return x;
+        }
+
+        public static string SerializeXML<T>(this T value) where T : class
+        {
+            string xml = string.Empty;
+
+            var serializer = new XmlSerializer(typeof(T));
+
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                serializer.Serialize(memoryStream, value);
+
+                memoryStream.Position = 0;
+
+                using (StreamReader reader = new StreamReader(memoryStream))
+                {
+                    xml = reader.ReadToEnd();
+                }
+            }
+
+            return xml;
         }
         #endregion
 
