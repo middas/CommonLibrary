@@ -136,10 +136,9 @@ namespace CommonLibrary.Native
 
         public static decimal? ToDecimalOrDefault(this object s, bool containsSpecialCharacters)
         {
-            decimal? d;
             if (containsSpecialCharacters)
             {
-                Regex regex = new Regex(@"[^A-Za-z0-9_.]");
+                Regex regex = new Regex(@"[\D]");
                 s = regex.Replace(s.ToString(), "");
             }
             return s.ToDecimalOrDefault();

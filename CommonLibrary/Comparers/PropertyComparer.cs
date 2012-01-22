@@ -38,7 +38,7 @@ namespace CommonLibrary.Comparers
                 var xValue = Property.GetValue(x, null);
                 var yValue = Property.GetValue(y, null);
 
-                if (Direction == null || Direction == System.ComponentModel.ListSortDirection.Ascending)
+                if (Direction == System.ComponentModel.ListSortDirection.Ascending)
                 {
                     result = Comparer.Default.Compare(xValue, yValue);
                 }
