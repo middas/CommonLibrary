@@ -70,5 +70,10 @@ namespace CommonLibrary.Forms
                 }
             }
         }
+
+        private void DateTimePickerMain_ValueChanged(object sender, EventArgs e)
+        {
+            Date = DateTimePickerMain.Value;
+        }
     }
 }
