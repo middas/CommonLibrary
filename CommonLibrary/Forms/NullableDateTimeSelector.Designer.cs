@@ -40,7 +40,7 @@
             this.DateTimePickerMain.Name = "DateTimePickerMain";
             this.DateTimePickerMain.Size = new System.Drawing.Size(200, 20);
             this.DateTimePickerMain.TabIndex = 0;
-            this.DateTimePickerMain.ValueChanged += new System.EventHandler(this.DateTimePickerMain_ValueChanged);
+            this.DateTimePickerMain.CloseUp += new System.EventHandler(this.DateTimePickerMain_CloseUp);
             // 
             // TextBoxMain
             // 

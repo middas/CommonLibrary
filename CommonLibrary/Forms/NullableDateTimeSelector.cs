@@ -32,9 +32,9 @@ namespace CommonLibrary.Forms
             }
             set
             {
-                DateTimePickerMain.Value = value.HasValue ? value.Value : SqlDateTime.MinValue.Value;
+                DateTimePickerMain.Value = value.HasValue ? value.Value : DateTime.Now;
 
-                if (DateTimePickerMain.Value == SqlDateTime.MinValue.Value)
+                if (!value.HasValue)
                 {
                     TextBoxMain.Text = string.Empty;
                 }
@@ -71,9 +71,12 @@ namespace CommonLibrary.Forms
             }
         }
 
-        private void DateTimePickerMain_ValueChanged(object sender, EventArgs e)
+        private void DateTimePickerMain_CloseUp(object sender, EventArgs e)
         {
-            Date = DateTimePickerMain.Value;
+            if (!DesignMode)
+            {
+                Date = DateTimePickerMain.Value;
+            }
         }
     }
 }
