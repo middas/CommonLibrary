@@ -99,6 +99,21 @@ namespace CommonLibrary.Native
 
             return newObject;
         }
+
+        public static string JoinIgnoreNullOrEmpty(this string s, string separator, params string[] values)
+        {
+            if (values != null && values.Length > 0)
+            {
+                string combinedValues = values.Aggregate((x, y) => y.IsNullOrEmptyTrim() ? x : x.IsNullOrEmptyTrim() ? y : string.Concat(x, separator, y));
+
+                if (!combinedValues.IsNullOrEmptyTrim())
+                {
+                    s = s.IsNullOrEmptyTrim() ? combinedValues : string.Concat(s, separator, combinedValues);
+                }
+            }
+
+            return s;
+        }
         #endregion
 
         #region Object
@@ -164,10 +179,21 @@ namespace CommonLibrary.Native
 
         public static decimal? ToDecimalOrDefault(this object s, bool containsSpecialCharacters)
         {
+            string value = s.ToString();
+
             if (containsSpecialCharacters)
             {
-                Regex regex = new Regex(@"[\D]");
-                s = regex.Replace(s.ToString(), "");
+                value = string.Empty;
+
+                Regex regex = new Regex(@"[\d.]");
+                var matches = regex.Matches(s.ToString());
+
+                foreach (var match in matches)
+                {
+                    value = value.JoinIgnoreNullOrEmpty("", match.ToString());
+                }
+
+                s = value;
             }
             return s.ToDecimalOrDefault();
         }
