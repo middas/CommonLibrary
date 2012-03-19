@@ -157,6 +157,26 @@ namespace CommonLibrary.Native
             return x;
         }
 
+        public static float? ToFloatOrDefault(this object s)
+        {
+            float f;
+            if (s != null && float.TryParse(s.ToString(), out f))
+            {
+                return f;
+            }
+            return null;
+        }
+
+        public static float ToFloatOrDefault(this object s, float x)
+        {
+            float? f;
+            if ((f = s.ToFloatOrDefault()) != null)
+            {
+                return f.Value;
+            }
+            return x;
+        }
+
         public static decimal? ToDecimalOrDefault(this object s)
         {
             decimal d;
