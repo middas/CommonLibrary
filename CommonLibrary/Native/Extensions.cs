@@ -428,6 +428,18 @@ namespace CommonLibrary.Native
                 }
             }
         }
+
+        public static IEnumerable<IEnumerable<T>> CreateBatch<T>(this IEnumerable<T> source, int size)
+        {
+            IEnumerable<IEnumerable<T>> batches;
+
+            batches = source.Select((s, i) => new { Index = i, Data = s }).GroupBy(x => x.Index / size).Select(x => x.Select(y => y.Data));
+
+            foreach (var batch in batches)
+            {
+                yield return batch;
+            }
+        }
         #endregion
 
         #region DataView
