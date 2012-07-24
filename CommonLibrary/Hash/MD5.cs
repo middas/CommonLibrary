@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using CommonLibrary.Native;
 
 namespace CommonLibrary.Hash
 {
@@ -7,13 +8,16 @@ namespace CommonLibrary.Hash
     {
         public static string GetMD5String(string s)
         {
-            byte[] hash = GetMD5(s);
-
             StringBuilder sb = new StringBuilder();
 
-            foreach (byte b in hash)
+            if (!s.IsNullOrEmptyTrim())
             {
-                sb.Append(b.ToString("X2"));
+                byte[] hash = GetMD5(s);
+
+                foreach (byte b in hash)
+                {
+                    sb.Append(b.ToString("X2"));
+                }
             }
 
             return sb.ToString();

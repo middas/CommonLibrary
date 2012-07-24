@@ -38,6 +38,7 @@ namespace CommonLibrary.Math
         }
 
         #region Operators
+
         public static Matrix operator +(Matrix a, Matrix b)
         {
             if (a.Rows != b.Rows && a.Columns != b.Columns)
@@ -103,7 +104,6 @@ namespace CommonLibrary.Math
 
         public static Matrix operator *(double scalar, Matrix matrix)
         {
-
             {
                 Matrix result = new Matrix(matrix.Rows, matrix.Columns);
 
@@ -122,6 +122,7 @@ namespace CommonLibrary.Math
         {
             return scalar * mat;
         }
-        #endregion
+
+        #endregion Operators
     }
 }

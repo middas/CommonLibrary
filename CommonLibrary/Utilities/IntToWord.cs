@@ -64,12 +64,15 @@ namespace CommonLibrary.Utilities
                 case 0:
                 case 1:
                     break;
+
                 case 2:
                     s = " thousand";
                     break;
+
                 case 3:
                     s = " million";
                     break;
+
                 case 4:
                     s = " billion";
                     break;
@@ -113,30 +116,39 @@ namespace CommonLibrary.Utilities
                             case 0:
                                 s = string.Format("{0} {1}", s, "ten");
                                 break;
+
                             case 1:
                                 s = string.Format("{0} {1}", s, "eleven");
                                 break;
+
                             case 2:
                                 s = string.Format("{0} {1}", s, "twelve");
                                 break;
+
                             case 3:
                                 s = string.Format("{0} {1}", s, "thirteen");
                                 break;
+
                             case 4:
                                 s = string.Format("{0} {1}", s, "fourteen");
                                 break;
+
                             case 5:
                                 s = string.Format("{0} {1}", s, "fifteen");
                                 break;
+
                             case 6:
                                 s = string.Format("{0} {1}", s, "sixteen");
                                 break;
+
                             case 7:
                                 s = string.Format("{0} {1}", s, "seventeen");
                                 break;
+
                             case 8:
                                 s = string.Format("{0} {1}", s, "eighteen");
                                 break;
+
                             case 9:
                                 s = string.Format("{0} {1}", s, "ninteen");
                                 break;
@@ -149,27 +161,35 @@ namespace CommonLibrary.Utilities
                             case 0:
                             case 1:
                                 break;
+
                             case 2:
                                 s = string.Format("{0} {1}", s, "twenty");
                                 break;
+
                             case 3:
                                 s = string.Format("{0} {1}", s, "thirty");
                                 break;
+
                             case 4:
                                 s = string.Format("{0} {1}", s, "forty");
                                 break;
+
                             case 5:
                                 s = string.Format("{0} {1}", s, "fifty");
                                 break;
+
                             case 6:
                                 s = string.Format("{0} {1}", s, "sixty");
                                 break;
+
                             case 7:
                                 s = string.Format("{0} {1}", s, "seventy");
                                 break;
+
                             case 8:
                                 s = string.Format("{0} {1}", s, "eighty");
                                 break;
+
                             case 9:
                                 s = string.Format("{0} {1}", s, "ninety");
                                 break;
@@ -191,7 +211,7 @@ namespace CommonLibrary.Utilities
                     s = string.Format("{0}{1}", s, GetWordFromInt(units));
                 }
             }
-            
+
             if (hundreds > 0 || tens > 0 || units > 0)
             {
                 s = string.Format("{0}{1}", s, GetNumberPosition(position));
@@ -209,27 +229,35 @@ namespace CommonLibrary.Utilities
                 case 1:
                     s = "one";
                     break;
+
                 case 2:
                     s = "two";
                     break;
+
                 case 3:
                     s = "three";
                     break;
+
                 case 4:
                     s = "four";
                     break;
+
                 case 5:
                     s = "five";
                     break;
+
                 case 6:
                     s = "six";
                     break;
+
                 case 7:
                     s = "seven";
                     break;
+
                 case 8:
                     s = "eight";
                     break;
+
                 case 9:
                     s = "nine";
                     break;

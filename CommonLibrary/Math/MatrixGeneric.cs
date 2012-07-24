@@ -1,5 +1,4 @@
-﻿
-namespace CommonLibrary.Math
+﻿namespace CommonLibrary.Math
 {
     public class Matrix<T>
     {

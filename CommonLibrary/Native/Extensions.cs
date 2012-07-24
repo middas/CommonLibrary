@@ -1,55 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text.RegularExpressions;
-using CommonLibrary.Utilities;
 using System.Runtime.InteropServices;
-using System.Xml.Serialization;
-using System.IO;
-using System.Xml.Linq;
+using System.Text.RegularExpressions;
 using System.Xml;
+using System.Xml.Serialization;
+using CommonLibrary.Utilities;
 
 namespace CommonLibrary.Native
 {
     public static class Extensions
     {
         #region Int32s
+
         public static string ToWord(this int i)
         {
             return IntToWord.ConvertIntToWords(i);
         }
-        #endregion
+
+        #endregion Int32s
 
         #region IntPtr
+
         public static T AsStruct<T>(this IntPtr i)
         {
             return (T)Marshal.PtrToStructure(i, typeof(T));
         }
-        #endregion
+
+        #endregion IntPtr
 
         #region Strings
-        public static bool IsNullOrEmpty(this string s)
-        {
-            return string.IsNullOrEmpty(s);
-        }
-
-        public static bool IsNullOrEmptyTrim(this string s)
-        {
-            bool isNullOrEmpty = false;
-
-            if (!s.IsNullOrEmpty())
-            {
-                isNullOrEmpty = string.IsNullOrEmpty(s.Trim());
-            }
-            else
-            {
-                isNullOrEmpty = s.IsNullOrEmpty();
-            }
-
-            return isNullOrEmpty;
-        }
 
         public static bool ContainsIgnoreCase(this string s, string value)
         {
@@ -59,21 +42,6 @@ namespace CommonLibrary.Native
             }
 
             return s.ToUpper().Contains(value.ToUpper());
-        }
-
-        public static bool EqualsIgnoreCase(this string s, string value)
-        {
-            if (value.IsNullOrEmpty())
-            {
-                throw new ArgumentNullException("value cannot be null");
-            }
-
-            return s.ToUpper().Equals(value.ToUpper());
-        }
-
-        public static string SFormat(this string s, params object[] args)
-        {
-            return string.Format(s, args);
         }
 
         public static T Deserialize<T>(this string value) where T : class
@@ -100,6 +68,37 @@ namespace CommonLibrary.Native
             return newObject;
         }
 
+        public static bool EqualsIgnoreCase(this string s, string value)
+        {
+            if (value.IsNullOrEmpty())
+            {
+                throw new ArgumentNullException("value cannot be null");
+            }
+
+            return s.ToUpper().Equals(value.ToUpper());
+        }
+
+        public static bool IsNullOrEmpty(this string s)
+        {
+            return string.IsNullOrEmpty(s);
+        }
+
+        public static bool IsNullOrEmptyTrim(this string s)
+        {
+            bool isNullOrEmpty = false;
+
+            if (!s.IsNullOrEmpty())
+            {
+                isNullOrEmpty = string.IsNullOrEmpty(s.Trim());
+            }
+            else
+            {
+                isNullOrEmpty = s.IsNullOrEmpty();
+            }
+
+            return isNullOrEmpty;
+        }
+
         public static string JoinIgnoreNullOrEmpty(this string s, string separator, params string[] values)
         {
             if (values != null && values.Length > 0)
@@ -114,67 +113,35 @@ namespace CommonLibrary.Native
 
             return s;
         }
-        #endregion
+
+        public static string SFormat(this string s, params object[] args)
+        {
+            return string.Format(s, args);
+        }
+
+        #endregion Strings
 
         #region Object
-        public static int? ToIntegerOrDefault(this object s)
-        {
-            int i;
-            if (s != null && Int32.TryParse(s.ToString(), out i))
-            {
-                return i;
-            }
-            return null;
-        }
 
-        public static int ToIntegerOrDefault(this object s, int x)
+        public static string SerializeXML<T>(this T value) where T : class
         {
-            int? i;
-            if ((i = s.ToIntegerOrDefault()) != null)
-            {
-                return i.Value;
-            }
-            return x;
-        }
+            string xml = string.Empty;
 
-        public static double? ToDoubleOrDefault(this object s)
-        {
-            double d;
-            if (s != null && Double.TryParse(s.ToString(), out d))
-            {
-                return d;
-            }
-            return null;
-        }
+            var serializer = new XmlSerializer(typeof(T));
 
-        public static double ToDoubleOrDefault(this object s, double x)
-        {
-            double? d;
-            if ((d = s.ToDoubleOrDefault()) != null)
+            using (MemoryStream memoryStream = new MemoryStream())
             {
-                return d.Value;
-            }
-            return x;
-        }
+                serializer.Serialize(memoryStream, value);
 
-        public static float? ToFloatOrDefault(this object s)
-        {
-            float f;
-            if (s != null && float.TryParse(s.ToString(), out f))
-            {
-                return f;
-            }
-            return null;
-        }
+                memoryStream.Position = 0;
 
-        public static float ToFloatOrDefault(this object s, float x)
-        {
-            float? f;
-            if ((f = s.ToFloatOrDefault()) != null)
-            {
-                return f.Value;
+                using (StreamReader reader = new StreamReader(memoryStream))
+                {
+                    xml = reader.ReadToEnd();
+                }
             }
-            return x;
+
+            return xml;
         }
 
         public static decimal? ToDecimalOrDefault(this object s)
@@ -228,48 +195,69 @@ namespace CommonLibrary.Native
             return x;
         }
 
-        public static string SerializeXML<T>(this T value) where T : class
+        public static double? ToDoubleOrDefault(this object s)
         {
-            string xml = string.Empty;
-
-            var serializer = new XmlSerializer(typeof(T));
-
-            using (MemoryStream memoryStream = new MemoryStream())
+            double d;
+            if (s != null && Double.TryParse(s.ToString(), out d))
             {
-                serializer.Serialize(memoryStream, value);
-
-                memoryStream.Position = 0;
-
-                using (StreamReader reader = new StreamReader(memoryStream))
-                {
-                    xml = reader.ReadToEnd();
-                }
+                return d;
             }
-
-            return xml;
+            return null;
         }
-        #endregion
+
+        public static double ToDoubleOrDefault(this object s, double x)
+        {
+            double? d;
+            if ((d = s.ToDoubleOrDefault()) != null)
+            {
+                return d.Value;
+            }
+            return x;
+        }
+
+        public static float? ToFloatOrDefault(this object s)
+        {
+            float f;
+            if (s != null && float.TryParse(s.ToString(), out f))
+            {
+                return f;
+            }
+            return null;
+        }
+
+        public static float ToFloatOrDefault(this object s, float x)
+        {
+            float? f;
+            if ((f = s.ToFloatOrDefault()) != null)
+            {
+                return f.Value;
+            }
+            return x;
+        }
+
+        public static int? ToIntegerOrDefault(this object s)
+        {
+            int i;
+            if (s != null && Int32.TryParse(s.ToString(), out i))
+            {
+                return i;
+            }
+            return null;
+        }
+
+        public static int ToIntegerOrDefault(this object s, int x)
+        {
+            int? i;
+            if ((i = s.ToIntegerOrDefault()) != null)
+            {
+                return i.Value;
+            }
+            return x;
+        }
+
+        #endregion Object
 
         #region IEnumerable<T>
-        public static IEnumerable<T> DistinctBy<T, K>(this IEnumerable<T> source, Func<T, K> keySelector)
-        {
-            if (keySelector == null || source == null)
-            {
-                throw new ArgumentNullException("Arguments cannot be null");
-            }
-
-            HashSet<K> knownKeys = new HashSet<K>();
-
-            foreach (T item in source)
-            {
-                var value = keySelector(item);
-
-                if (value != null && knownKeys.Add(value))
-                {
-                    yield return item;
-                }
-            }
-        }
 
         public static bool ContainsProperty<T>(this IEnumerable<T> source, Func<T, bool> comparer)
         {
@@ -312,6 +300,54 @@ namespace CommonLibrary.Native
             return count;
         }
 
+        public static IEnumerable<IEnumerable<T>> CreateBatch<T>(this IEnumerable<T> source, int size)
+        {
+            IEnumerable<IEnumerable<T>> batches;
+
+            batches = source.Select((s, i) => new { Index = i, Data = s }).GroupBy(x => x.Index / size).Select(x => x.Select(y => y.Data));
+
+            foreach (var batch in batches)
+            {
+                yield return batch;
+            }
+        }
+
+        public static IEnumerable<T> DistinctBy<T, K>(this IEnumerable<T> source, Func<T, K> keySelector)
+        {
+            if (keySelector == null || source == null)
+            {
+                throw new ArgumentNullException("Arguments cannot be null");
+            }
+
+            HashSet<K> knownKeys = new HashSet<K>();
+
+            foreach (T item in source)
+            {
+                var value = keySelector(item);
+
+                if (value != null && knownKeys.Add(value))
+                {
+                    yield return item;
+                }
+            }
+        }
+
+        public static IEnumerable<T> ExecuteForEach<U, T>(this IEnumerable<U> source, Func<U, T> function)
+        {
+            foreach (U item in source)
+            {
+                yield return function(item);
+            }
+        }
+
+        public static void PerformOnEach<T>(this IEnumerable<T> source, Action<T> action)
+        {
+            foreach (T item in source)
+            {
+                action(item);
+            }
+        }
+
         public static bool PropertyMatchesAll<T>(this IEnumerable<T> source, Func<T, bool> comparer)
         {
             if (comparer == null || source == null)
@@ -331,6 +367,34 @@ namespace CommonLibrary.Native
             }
 
             return matches;
+        }
+
+        public static IEnumerable<T> RemoveWhere<T>(this IEnumerable<T> source, Func<T, bool> predicate)
+        {
+            foreach (T item in source)
+            {
+                if (!predicate(item))
+                {
+                    yield return item;
+                }
+            }
+        }
+
+        public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source)
+        {
+            List<T> oldList = source.ToList();
+            Random random = new Random();
+
+            while (oldList.Count > 0)
+            {
+                int index = random.Next(0, oldList.Count);
+
+                T t = oldList[index];
+
+                oldList.RemoveAt(index);
+
+                yield return t;
+            }
         }
 
         public static DataTable ToDataTable<T>(this IEnumerable<T> source)
@@ -373,22 +437,6 @@ namespace CommonLibrary.Native
             return table;
         }
 
-        public static IEnumerable<T> ExecuteForEach<U, T>(this IEnumerable<U> source, Func<U, T> function)
-        {
-            foreach (U item in source)
-            {
-                yield return function(item);
-            }
-        }
-
-        public static void PerformOnEach<T>(this IEnumerable<T> source, Action<T> action)
-        {
-            foreach (T item in source)
-            {
-                action(item);
-            }
-        }
-
         public static string ToString<T>(this IEnumerable<T> source, Func<T, string> stringElement, string separator)
         {
             List<string> stringCollection = source.ExecuteForEach(t => stringElement(t)).ToList();
@@ -401,48 +449,10 @@ namespace CommonLibrary.Native
             return source.ToString(t => t.ToString(), separator);
         }
 
-        public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source)
-        {
-            List<T> oldList = source.ToList();
-            Random random = new Random();
-
-            while (oldList.Count > 0)
-            {
-                int index = random.Next(0, oldList.Count);
-
-                T t = oldList[index];
-
-                oldList.RemoveAt(index);
-
-                yield return t;
-            }
-        }
-
-        public static IEnumerable<T> RemoveWhere<T>(this IEnumerable<T> source, Func<T, bool> predicate)
-        {
-            foreach (T item in source)
-            {
-                if (!predicate(item))
-                {
-                    yield return item;
-                }
-            }
-        }
-
-        public static IEnumerable<IEnumerable<T>> CreateBatch<T>(this IEnumerable<T> source, int size)
-        {
-            IEnumerable<IEnumerable<T>> batches;
-
-            batches = source.Select((s, i) => new { Index = i, Data = s }).GroupBy(x => x.Index / size).Select(x => x.Select(y => y.Data));
-
-            foreach (var batch in batches)
-            {
-                yield return batch;
-            }
-        }
-        #endregion
+        #endregion IEnumerable<T>
 
         #region DataView
+
         public static string GetDelimitedString(this DataView source, string rowDelimiter, string columnDelimiter, bool includeHeaders, params string[] columns)
         {
             List<string> rowData = new List<string>();
@@ -479,9 +489,11 @@ namespace CommonLibrary.Native
 
             return rowData.ToString(rowDelimiter);
         }
-        #endregion
+
+        #endregion DataView
 
         #region DataTable
+
         public static string GetDelimitedString(this DataTable source, string rowDelimiter, string columnDelimiter, bool includeHeaders, params string[] columns)
         {
             return source.DefaultView.GetDelimitedString(rowDelimiter, columnDelimiter, includeHeaders, columns);
@@ -498,9 +510,11 @@ namespace CommonLibrary.Native
 
             return list;
         }
-        #endregion
+
+        #endregion DataTable
 
         #region ControlCollection
+
         public static IEnumerable<T> ToList<T>(this System.Windows.Forms.Control.ControlCollection source)
         {
             var enumerator = source.GetEnumerator();
@@ -520,6 +534,7 @@ namespace CommonLibrary.Native
                 yield return (T)enumerator.Current;
             }
         }
-        #endregion
+
+        #endregion ControlCollection
     }
 }

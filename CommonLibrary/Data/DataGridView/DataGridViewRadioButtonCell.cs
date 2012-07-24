@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace CommonLibrary.Data.DataGridView
 {
-    public class DataGridViewRadioButtonCell : 
+    public class DataGridViewRadioButtonCell :
         DataGridViewComboBoxCell, IDataGridViewEditingCell
     {
         #region IDataGridViewEditingCell Members
@@ -43,7 +43,7 @@ namespace CommonLibrary.Data.DataGridView
             throw new NotImplementedException();
         }
 
-        #endregion
+        #endregion IDataGridViewEditingCell Members
 
         public override Type EditType
         {
