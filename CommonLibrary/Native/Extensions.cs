@@ -1,14 +1,16 @@
-﻿using System;
+﻿using CommonLibrary.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
-using CommonLibrary.Utilities;
 
 namespace CommonLibrary.Native
 {
@@ -255,6 +257,28 @@ namespace CommonLibrary.Native
             return x;
         }
 
+        public static long? ToLongOrDefault(this object s)
+        {
+            long i;
+            if (s != null && Int64.TryParse(s.ToString(), out i))
+            {
+                return i;
+            }
+
+            return null;
+        }
+
+        public static long ToLongOrDefault(this object s, long x)
+        {
+            long? i;
+            if ((i = s.ToLongOrDefault()) != null)
+            {
+                return i.Value;
+            }
+
+            return x;
+        }
+
         #endregion Object
 
         #region IEnumerable<T>
@@ -300,19 +324,26 @@ namespace CommonLibrary.Native
             return count;
         }
 
-        public static IEnumerable<IEnumerable<T>> CreateBatch<T>(this IEnumerable<T> source, int size)
+        public static int CountUntil<T>(this IEnumerable<T> source, Func<T, bool> comparer)
         {
-            IEnumerable<IEnumerable<T>> batches;
+            int count = 0;
 
-            batches = source.Select((s, i) => new { Index = i, Data = s }).GroupBy(x => x.Index / size).Select(x => x.Select(y => y.Data));
-
-            foreach (var batch in batches)
+            foreach (T obj in source)
             {
-                yield return batch;
+                if (comparer(obj))
+                {
+                    break;
+                }
+                else
+                {
+                    count++;
+                }
             }
+
+            return count;
         }
 
-        public static IEnumerable<T> DistinctBy<T, K>(this IEnumerable<T> source, Func<T, K> keySelector)
+        public static IEnumerable<T> DistinctBy<T, K>(this IEnumerable<T> source, Expression<Func<T, K>> keySelector)
         {
             if (keySelector == null || source == null)
             {
@@ -323,7 +354,7 @@ namespace CommonLibrary.Native
 
             foreach (T item in source)
             {
-                var value = keySelector(item);
+                var value = keySelector.Compile()(item);
 
                 if (value != null && knownKeys.Add(value))
                 {
@@ -536,5 +567,64 @@ namespace CommonLibrary.Native
         }
 
         #endregion ControlCollection
+
+        #region Control
+
+        public static void Invoke(this Control control, Action action)
+        {
+            control.Invoke((Delegate)action);
+        }
+
+        #endregion Control
+
+        #region Null Helper
+
+        public static bool IsNull<T>(this T root, Expression<Func<T, object>> getter)
+        {
+            IsNullVisitor visitor = new IsNullVisitor();
+
+            visitor.CurrentObject = root;
+            visitor.Visit(getter);
+
+            return visitor.IsNull;
+        }
+
+        private class IsNullVisitor : ExpressionVisitor
+        {
+            public object CurrentObject;
+
+            public bool IsNull { get; set; }
+
+            protected override Expression VisitMember(MemberExpression node)
+            {
+                base.VisitMember(node);
+
+                // before attempting to get the value, check for nulls or this will throw an exception
+                if (CheckNull())
+                {
+                    return node;
+                }
+
+                PropertyInfo member = (PropertyInfo)node.Member;
+
+                CurrentObject = member.GetValue(CurrentObject, null);
+
+                CheckNull();
+
+                return node;
+            }
+
+            private bool CheckNull()
+            {
+                if (CurrentObject == null)
+                {
+                    IsNull = true;
+                }
+
+                return IsNull;
+            }
+        }
+
+        #endregion Null Helper
     }
 }

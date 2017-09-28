@@ -1,11 +1,16 @@
-﻿using System;
+﻿using CommonLibrary.Native;
+using System;
 using System.Windows.Forms;
-using CommonLibrary.Native;
 
 namespace CommonLibrary.Forms
 {
     public partial class NullableDateTimeSelector : UserControl
     {
+        public NullableDateTimeSelector()
+        {
+            InitializeComponent();
+        }
+
         public DateTime? Date
         {
             get
@@ -38,9 +43,12 @@ namespace CommonLibrary.Forms
             }
         }
 
-        public NullableDateTimeSelector()
+        private void DateTimePickerMain_CloseUp(object sender, EventArgs e)
         {
-            InitializeComponent();
+            if (!DesignMode)
+            {
+                Date = DateTimePickerMain.Value;
+            }
         }
 
         private void TextBoxMain_Leave(object sender, EventArgs e)
@@ -61,14 +69,6 @@ namespace CommonLibrary.Forms
                 {
                     Date = null;
                 }
-            }
-        }
-
-        private void DateTimePickerMain_CloseUp(object sender, EventArgs e)
-        {
-            if (!DesignMode)
-            {
-                Date = DateTimePickerMain.Value;
             }
         }
     }

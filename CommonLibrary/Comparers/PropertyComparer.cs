@@ -7,10 +7,17 @@ namespace CommonLibrary.Comparers
 {
     public class PropertyComparer<T> : Comparer<T>
     {
-        private PropertyInfo Property
+        private string _PropertyName;
+
+        public PropertyComparer()
         {
-            get;
-            set;
+        }
+
+        public PropertyComparer(System.ComponentModel.PropertyDescriptor prop, System.ComponentModel.ListSortDirection direction)
+        {
+            _PropertyName = prop.Name;
+            Property = typeof(T).GetProperty(prop.Name);
+            Direction = direction;
         }
 
         private System.ComponentModel.ListSortDirection Direction
@@ -19,14 +26,10 @@ namespace CommonLibrary.Comparers
             set;
         }
 
-        public PropertyComparer()
+        private PropertyInfo Property
         {
-        }
-
-        public PropertyComparer(System.ComponentModel.PropertyDescriptor prop, System.ComponentModel.ListSortDirection direction)
-        {
-            Property = typeof(T).GetProperty(prop.Name);
-            Direction = direction;
+            get;
+            set;
         }
 
         public override int Compare(T x, T y)
@@ -34,6 +37,12 @@ namespace CommonLibrary.Comparers
             if (x.GetType() == y.GetType())
             {
                 int result;
+
+                // handle dynamic types
+                if (Property == null)
+                {
+                    Property = x.GetType().GetProperty(_PropertyName);
+                }
 
                 var xValue = Property.GetValue(x, null);
                 var yValue = Property.GetValue(y, null);

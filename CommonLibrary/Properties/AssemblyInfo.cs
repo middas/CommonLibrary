@@ -13,12 +13,15 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright © Justin Sommercorn 2010")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
+
 // Setting ComVisible to false makes the types in this assembly not visible
 // to COM components.  If you need to access a type in this assembly from
 // COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
+
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("670a18c3-ba7a-47e2-8c31-634a71774b27")]
+
 // Version information for an assembly consists of the following four values:
 //
 //      Major Version
@@ -29,6 +32,6 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2012.7.7.20")]
-[assembly: AssemblyFileVersion("2012.7.7.20")]
+[assembly: AssemblyVersion("1.0.13174.46")]
+[assembly: AssemblyFileVersion("1.0.13174.46")]
 [assembly: NeutralResourcesLanguageAttribute("en")]

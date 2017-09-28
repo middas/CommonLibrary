@@ -32,3 +32,4 @@ _UpgradeReport_Files/
 Backup/CommonLibrary/CommonLibrary Key.pfx
 *.svn*
 Backup/
+*.vs

@@ -1,21 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using CommonLibrary.Comparers;
+using System.Collections.Generic;
 using System.ComponentModel;
-using CommonLibrary.Comparers;
 
 namespace CommonLibrary.Lists
 {
     public class SortableBindableList<T> : BindingList<T>
     {
-        private ListSortDirection Direction
+        protected override bool IsSortedCore
         {
-            get;
-            set;
-        }
-
-        private bool IsSorted
-        {
-            get;
-            set;
+            get
+            {
+                return IsSorted;
+            }
         }
 
         protected override ListSortDirection SortDirectionCore
@@ -26,17 +22,24 @@ namespace CommonLibrary.Lists
             }
         }
 
-        protected override void RemoveSortCore()
-        {
-            IsSorted = false;
-        }
-
         protected override bool SupportsSortingCore
         {
             get
             {
                 return true;
             }
+        }
+
+        private ListSortDirection Direction
+        {
+            get;
+            set;
+        }
+
+        private bool IsSorted
+        {
+            get;
+            set;
         }
 
         protected override void ApplySortCore(PropertyDescriptor prop, ListSortDirection direction)
@@ -54,17 +57,14 @@ namespace CommonLibrary.Lists
             }
         }
 
-        protected override bool IsSortedCore
-        {
-            get
-            {
-                return IsSorted;
-            }
-        }
-
         protected override void OnListChanged(ListChangedEventArgs e)
         {
             new ListChangedEventArgs(ListChangedType.Reset, -1);
+        }
+
+        protected override void RemoveSortCore()
+        {
+            IsSorted = false;
         }
     }
 }

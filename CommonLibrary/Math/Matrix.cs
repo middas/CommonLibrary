@@ -6,10 +6,11 @@ namespace CommonLibrary.Math
     {
         private double[,] _Elements;
 
-        public int Rows
+        public Matrix(int rows, int columns)
         {
-            get;
-            private set;
+            _Elements = new double[rows, columns];
+            Rows = rows;
+            Columns = columns;
         }
 
         public int Columns
@@ -18,11 +19,10 @@ namespace CommonLibrary.Math
             private set;
         }
 
-        public Matrix(int rows, int columns)
+        public int Rows
         {
-            _Elements = new double[rows, columns];
-            Rows = rows;
-            Columns = columns;
+            get;
+            private set;
         }
 
         public double this[int row, int column]
@@ -38,26 +38,6 @@ namespace CommonLibrary.Math
         }
 
         #region Operators
-
-        public static Matrix operator +(Matrix a, Matrix b)
-        {
-            if (a.Rows != b.Rows && a.Columns != b.Columns)
-            {
-                throw new ArithmeticException("Rows and/or Columns are not equal");
-            }
-
-            Matrix result = new Matrix(a.Rows, a.Columns);
-
-            for (int row = 0; row < a.Rows; row++)
-            {
-                for (int col = 0; col < a.Columns; col++)
-                {
-                    result[row, col] = a[row, col] + b[row, col];
-                }
-            }
-
-            return result;
-        }
 
         public static Matrix operator -(Matrix a, Matrix b)
         {
@@ -121,6 +101,26 @@ namespace CommonLibrary.Math
         public static Matrix operator *(Matrix mat, double scalar)
         {
             return scalar * mat;
+        }
+
+        public static Matrix operator +(Matrix a, Matrix b)
+        {
+            if (a.Rows != b.Rows && a.Columns != b.Columns)
+            {
+                throw new ArithmeticException("Rows and/or Columns are not equal");
+            }
+
+            Matrix result = new Matrix(a.Rows, a.Columns);
+
+            for (int row = 0; row < a.Rows; row++)
+            {
+                for (int col = 0; col < a.Columns; col++)
+                {
+                    result[row, col] = a[row, col] + b[row, col];
+                }
+            }
+
+            return result;
         }
 
         #endregion Operators

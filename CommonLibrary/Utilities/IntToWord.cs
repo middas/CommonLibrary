@@ -55,32 +55,6 @@ namespace CommonLibrary.Utilities
             return value.Trim();
         }
 
-        private static string GetNumberPosition(int i)
-        {
-            string s = "";
-
-            switch (i)
-            {
-                case 0:
-                case 1:
-                    break;
-
-                case 2:
-                    s = " thousand";
-                    break;
-
-                case 3:
-                    s = " million";
-                    break;
-
-                case 4:
-                    s = " billion";
-                    break;
-            }
-
-            return s;
-        }
-
         private static string ConvertToWords(int threeDigits, int position)
         {
             string s = "";
@@ -215,6 +189,32 @@ namespace CommonLibrary.Utilities
             if (hundreds > 0 || tens > 0 || units > 0)
             {
                 s = string.Format("{0}{1}", s, GetNumberPosition(position));
+            }
+
+            return s;
+        }
+
+        private static string GetNumberPosition(int i)
+        {
+            string s = "";
+
+            switch (i)
+            {
+                case 0:
+                case 1:
+                    break;
+
+                case 2:
+                    s = " thousand";
+                    break;
+
+                case 3:
+                    s = " million";
+                    break;
+
+                case 4:
+                    s = " billion";
+                    break;
             }
 
             return s;

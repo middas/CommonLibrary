@@ -15,15 +15,38 @@ namespace CommonLibrary.Forms
             this.AutoSize = true;
         }
 
-        protected override void OnTextChanged(EventArgs e)
+        public override Size GetPreferredSize(Size proposedSize)
         {
-            base.OnTextChanged(e);
-            CacheTextSize();
+            Size prefSize = base.GetPreferredSize(proposedSize);
+            if ((prefSize.Width > proposedSize.Width) && (!String.IsNullOrEmpty(this.Text) && !proposedSize.Width.Equals(Int32.MaxValue) || !proposedSize.Height.Equals(Int32.MaxValue)))
+            {
+                // we have the possiblility of wrapping... back out the single line of text
+                Size bordersAndPadding = prefSize - cachedSizeOfOneLineOfText;
+
+                // add back in the text size, subtract baseprefsize.width and 3 from proposed size width so they wrap properly
+                Size newConstraints = proposedSize - bordersAndPadding - new Size(3, 0);
+                if (!preferredSizeHash.ContainsKey(newConstraints))
+                {
+                    prefSize = bordersAndPadding + TextRenderer.MeasureText(this.Text, this.Font, newConstraints, TextFormatFlags.WordBreak);
+                    preferredSizeHash[newConstraints] = prefSize;
+                }
+                else
+                {
+                    prefSize = preferredSizeHash[newConstraints];
+                }
+            }
+            return prefSize;
         }
 
         protected override void OnFontChanged(EventArgs e)
         {
             base.OnFontChanged(e);
+            CacheTextSize();
+        }
+
+        protected override void OnTextChanged(EventArgs e)
+        {
+            base.OnTextChanged(e);
             CacheTextSize();
         }
 
@@ -40,28 +63,6 @@ namespace CommonLibrary.Forms
             {
                 cachedSizeOfOneLineOfText = TextRenderer.MeasureText(this.Text, this.Font, new Size(Int32.MaxValue, Int32.MaxValue), TextFormatFlags.WordBreak);
             }
-        }
-
-        public override Size GetPreferredSize(Size proposedSize)
-        {
-            Size prefSize = base.GetPreferredSize(proposedSize);
-            if ((prefSize.Width > proposedSize.Width) && (!String.IsNullOrEmpty(this.Text) && !proposedSize.Width.Equals(Int32.MaxValue) || !proposedSize.Height.Equals(Int32.MaxValue)))
-            {
-                // we have the possiblility of wrapping... back out the single line of text
-                Size bordersAndPadding = prefSize - cachedSizeOfOneLineOfText;
-                // add back in the text size, subtract baseprefsize.width and 3 from proposed size width so they wrap properly
-                Size newConstraints = proposedSize - bordersAndPadding - new Size(3, 0);
-                if (!preferredSizeHash.ContainsKey(newConstraints))
-                {
-                    prefSize = bordersAndPadding + TextRenderer.MeasureText(this.Text, this.Font, newConstraints, TextFormatFlags.WordBreak);
-                    preferredSizeHash[newConstraints] = prefSize;
-                }
-                else
-                {
-                    prefSize = preferredSizeHash[newConstraints];
-                }
-            }
-            return prefSize;
         }
     }
 }

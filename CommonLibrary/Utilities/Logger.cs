@@ -1,16 +1,10 @@
-﻿using System;
-using CommonLibrary.Patterns;
+﻿using CommonLibrary.Patterns;
+using System;
 
 namespace CommonLibrary.Utilities
 {
     public class Logger
     {
-        public bool IsInitialized
-        {
-            get;
-            private set;
-        }
-
         private Action<string> LogAction;
 
         public static Logger GetLogger
@@ -19,6 +13,12 @@ namespace CommonLibrary.Utilities
             {
                 return Singleton<Logger>.GetInstance();
             }
+        }
+
+        public bool IsInitialized
+        {
+            get;
+            private set;
         }
 
         public void Initialize(Action<string> logAction)

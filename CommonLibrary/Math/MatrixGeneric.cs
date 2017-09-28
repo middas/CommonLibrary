@@ -4,10 +4,10 @@
     {
         private T[][] _Data;
 
-        public int Rows
+        public Matrix(int rows, int columns)
         {
-            get;
-            private set;
+            Rows = rows;
+            Columns = columns;
         }
 
         public int Columns
@@ -16,10 +16,10 @@
             private set;
         }
 
-        public Matrix(int rows, int columns)
+        public int Rows
         {
-            Rows = rows;
-            Columns = columns;
+            get;
+            private set;
         }
 
         public T this[int row, int column]
